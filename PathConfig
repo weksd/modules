@@ -1,0 +1,11 @@
+import java.io.File;
+
+public class PathConfig {
+    public static final String IN_FILE_TXT = "src\\ru.demo.downloadmusic.music\\src.ru.demo\\downloadmusic\\inFile.txt";
+    public static final String OUT_FILE_TXT = "src\\ru.demo.downloadmusic.music\\src.ru.demo\\downloadmusic\\outFile.txt";
+    public static final String PATH_TO_MUSIC = "src\\ru.demo.downloadmusic.music\\src.ru.demo\\downloadmusic\\music\\";
+
+    public static void ensureMusicDirectoryExists() {
+        new File(PATH_TO_MUSIC).mkdirs();
+    }
+}
