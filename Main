@@ -1,0 +1,13 @@
+public class Main {
+    public static void main(String[] args) {
+        PathConfig.ensureMusicDirectoryExists();
+
+        try {
+            LinkExtractor.extractMusicLinks();
+            FileDownloader.downloadMusicFiles();
+        } catch (IOException e) {
+            System.err.println("Ошибка выполнения:");
+            e.printStackTrace();
+        }
+    }
+}
