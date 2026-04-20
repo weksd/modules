@@ -1,0 +1,42 @@
+import java.io.*;
+import java.net.URL;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
+public class LinkExtractor {
+    public static void extractMusicLinks() throws IOException {
+        try (BufferedReader inFile = new BufferedReader(new FileReader(PathConfig.IN_FILE_TXT));
+             BufferedWriter outFile = new BufferedWriter(new FileWriter(PathConfig.OUT_FILE_TXT))) {
+
+            File inputFile = new File(PathConfig.IN_FILE_TXT);
+            System.out.println("Проверяемый абсолютный путь inFile.txt: " + inputFile.getAbsolutePath());
+
+            System.out.println("Начинаем извлечение ссылок из " + PathConfig.IN_FILE_TXT + "...");
+
+            String pageUrl;
+            while ((pageUrl = inFile.readLine()) != null) {
+                if (pageUrl.trim().isEmpty()) continue;
+                System.out.println("Обрабатываем страницу: " + pageUrl);
+
+                URL url = new URL(pageUrl);
+                String pageContent;
+                try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(url.openStream()))) {
+                    pageContent = bufferedReader.lines().collect(Collectors.joining("\n"));
+                }
+
+                Pattern mp3UrlPattern = Pattern.compile("(?<='audio':\\s?\")[^\"]+\\.mp3(?=\")");
+                Matcher matcher = mp3UrlPattern.matcher(pageContent);
+
+                if (matcher.find()) {
+                    String musicDownloadUrl = matcher.group();
+            outFile.write(musicDownloadUrl + "\r\n");
+            System.out.println("  Найдена ссылка: " + musicDownloadUrl);
+        } else {
+            System.out.println("  Ссылка на MP3 не найдена на странице " + pageUrl);
+        }
+            }
+            System.out.println("Извлечение ссылок завершено. Ссылки записаны в " + PathConfig.OUT_FILE_TXT);
+        }
+    }
+}
